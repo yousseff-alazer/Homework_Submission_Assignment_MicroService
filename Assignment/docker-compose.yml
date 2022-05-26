@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  homework_db:
+    image: mysql:5.7.22
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.7
+
+  assignment.api:
+    image: ${DOCKER_REGISTRY-}assignmentapi
+    build:
+      context: .
+      dockerfile: Assignment.API/Dockerfile
+
+networks:
+  assignment:
+    driver: bridge
+volumes:
+  mysql:
+    driver: local

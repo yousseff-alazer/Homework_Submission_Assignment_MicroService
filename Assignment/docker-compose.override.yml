@@ -1,0 +1,46 @@
+version: '3.4'
+
+services:
+
+  homework_db:
+    image: mysql:5.7.22
+    container_name: homework_db
+    restart: always
+    tty: true
+    ports:
+      - "3310:3310"
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./nginx:/etc/mysql/conf.d
+    environment:
+      MYSQL_DATABASE: homework_db
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: 1a456#idgj_5f@sj*du7fg78@
+      SERVICE_NAME: homework_db
+      MYSQL_TCP_PORT: 3310
+    networks:
+      - assignment
+
+  phpmyadmin:
+    depends_on:
+      - homework_db
+    container_name: phpmyadmin
+    restart: always
+    tty: true
+    ports:
+      - "4010:80"
+    environment:
+      PMA_HOST: homework_db
+      PMA_PORT: 3310
+    networks:
+      - assignment
+  assignment.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings:ConnectionString=server=homework_db;port=3310;database=homework_db;user id=root;password=1a456#idgj_5f@sj*du7fg78@;sslmode=none;treattinyasboolean=false;"
+    depends_on:
+      - homework_db
+    ports:
+      - "8010:80"
+    networks:
+      - assignment
